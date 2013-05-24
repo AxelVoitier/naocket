@@ -11,5 +11,5 @@ if 'accessToken' not in dir(pocketConsumerKey):
 
     pocketConsumerKey.accessToken = pocket.getAccessToken(pocketConsumerKey.key, reqCode)
     print pocketConsumerKey.accessToken
-
-print pocketConsumerKey.accessToken
+    
+print pocket.retrieve(pocketConsumerKey.key, pocketConsumerKey.accessToken[0])

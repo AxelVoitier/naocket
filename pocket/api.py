@@ -50,4 +50,8 @@ def getAccessToken(consumerKey, code):
     data = {'consumer_key': consumerKey, 'code': code}
     response = callToPocketAPI('https://getpocket.com/v3/oauth/authorize', data)
     return (response['access_token'], response['username'])
-
+    
+def retrieve(consumerKey, accessToken):
+    data = {'consumer_key': consumerKey, 'access_token': accessToken}
+    response = callToPocketAPI('https://getpocket.com/v3/get', data)
+    return response
