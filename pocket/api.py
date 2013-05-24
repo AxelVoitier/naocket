@@ -28,7 +28,8 @@ def callToPocketAPI(url, data):
     response = requests.post(url, data=json.dumps(data), headers=headers)
     try:
         response.raise_for_status()
-        return response.json()
+        limits = filter(lambda x: x[0].startswith('x-limit-'), response.headers.items())
+        return (response.json(), limits)
     except HTTPError:
         if response.status_code == 400:
             raise PocketInvalidRequestException(response.headers['x-error-code'], response.headers['x-error'])
@@ -44,12 +45,12 @@ def callToPocketAPI(url, data):
 
 def getRequestToken(consumerKey, redirectUri):
     data = {'consumer_key': consumerKey, 'redirect_uri': redirectUri}
-    return callToPocketAPI('https://getpocket.com/v3/oauth/request', data)['code']
+    return callToPocketAPI('https://getpocket.com/v3/oauth/request', data)[0]['code']
             
 def getAccessToken(consumerKey, code):
     data = {'consumer_key': consumerKey, 'code': code}
     response = callToPocketAPI('https://getpocket.com/v3/oauth/authorize', data)
-    return (response['access_token'], response['username'])
+    return (response['access_token'], response['username'])[0]
     
 def retrieve(consumerKey, accessToken):
     data = {'consumer_key': consumerKey, 'access_token': accessToken}
