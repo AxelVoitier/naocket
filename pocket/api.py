@@ -93,6 +93,9 @@ class PocketAPI(object):
     def getRequestToken(self, redirectUri):
         data = {'consumer_key': self.consumerKey, 'redirect_uri': redirectUri}
         return self._rawCallToPocketAPI('https://getpocket.com/v3/oauth/request', data)['code']
+        
+    def getAuthUrl(self, requestToken, redirectUri):
+        return 'https://getpocket.com/auth/authorize?request_token=%s&redirect_uri=%s' % (requestToken, redirectUri)
             
     def getAccessToken(self, code):
         data = {'consumer_key': self.consumerKey, 'code': code}
@@ -101,6 +104,6 @@ class PocketAPI(object):
         self.username = response['username']
         return (self.accessToken, self.username)
     
-    def retrieve(self, data = {}):
+    def retrieve(self, **data):
         response = self._authCallToPocketAPI('https://getpocket.com/v3/get', data)
         return response
