@@ -1,0 +1,100 @@
+<!--
+# Copyright Axel Voitier (May 2013)
+# 
+# axel.voitier@gmail.com
+# 
+# This software is a computer program whose purpose is to have NAO,
+# the humanoid robot, read aloud articles saved in Pocket.
+# 
+# This software is governed by the CeCILL license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+# 
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+# 
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+# 
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL license and that you accept its terms.
+-->
+<p id="status"></p>
+<input class="ALButton" type="button" value="Log into Pocket" onclick="pocketAuth();" id="pocketLogBtn" style="display: none;">
+<script type="text/javascript">
+    var memProxy = new ALProxy('ALMemory');
+    var naocketProxy = new ALProxy('Naocket');
+    
+// For debug
+/*function getType(value) {
+  var type = typeof(value);
+  switch (type) {
+    case 'string':
+    case 'boolean':
+      break;
+    case 'number':
+      type = (Math.round(value) == value) ? 'int' : 'double';
+      break;
+    case 'object':
+      if (value instanceof Number) {
+        type = (Math.round(value) == value) ? 'int' : 'double';
+      } else if (value instanceof Boolean){
+        type = 'boolean';
+      } else if (value instanceof Array){
+        type = 'array';
+      } else if (value instanceof Date){
+        type = 'timestamp';
+      } else {
+        type = 'unknown';
+      }
+      break;
+    default:
+      type = 'unknown';
+      break;
+  }
+  return type;
+}*/
+
+    if(naocketProxy === undefined) {
+        $('#status').append('The Naocket application is not running on the robot.');
+    }else{
+        //memProxy.call('getData', ['Naocket/accessToken'], function(res) {
+        AWPreferences.getPreference('/Naocket/accessToken', function(res) {
+            if(res.length == 0) {
+                $('#pocketLogBtn').show();
+            }else{
+                $('#status').append('Logged into Pocket!');
+                naocketProxy.call('getLen', [], function(res) {
+                    $('#status').append('<br>' + res[0]);
+                });
+            }
+        });
+    }
+  
+    function pocketAuth() {
+        token = Base64.encode('MyLogin=' + MyLogin + '&p=' + p).toString();
+        naocketProxy.call('getAuthUrl', [token], function(res) {
+            requestToken = res[0];
+            authUrl = 'https://getpocket.com/auth/authorize?request_token=' + requestToken + '&redirect_uri=https://community.aldebaran-robotics.com/mynao/naocket/authorizationFinished.html?' + token;
+            var win = window.open(authUrl, '_blank');
+            win.focus();
+            $('#results').append(res[0]);
+            $('#results').append('<br/>');
+            $('#results').append(authUrl);
+            $('#results').effect('highlight', {}, 500);
+        });
+    }
+</script>

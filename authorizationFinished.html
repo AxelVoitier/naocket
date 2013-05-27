@@ -1,0 +1,106 @@
+<!--
+# Copyright Axel Voitier (May 2013)
+# 
+# axel.voitier@gmail.com
+# 
+# This software is a computer program whose purpose is to have NAO,
+# the humanoid robot, read aloud articles saved in Pocket.
+# 
+# This software is governed by the CeCILL license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+# 
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+# 
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+# 
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL license and that you accept its terms.
+-->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="/media/js/jquery.min.js?20130526064228"></script>
+<!--[if lt IE 9]><script type="text/javascript" src="/media/js/html5.js?20130526064228"></script><![endif]-->
+<script type="text/javascript" src="/media/bootstrap/js/bootstrap.min.js?20130526064228"></script>
+<script type="text/javascript" src="/media/bootstrap/js/jquery.truncatable.js?20130526064228"></script>
+<script type="text/javascript" src="/media/js/konami.js"></script>
+<script type="text/javascript" src="/media/js/common.js?20130526064228"></script>
+<script type="text/javascript">var MyNaoAddr='';var UrlRegister='/mynao/register/';var UrlWidgets='/mynao/getwidgets/';var UrlAddNao='/mynao/addnao/';var BoshSvc = '/xmpp-svr/http-bind/';var MyLogin='';var p='';</script>
+<script type="text/javascript" src="/media/js/jquery-ui.min.js?20130526064228"></script>
+<script type="text/javascript" src="/media/js/jquery.progressbar.js?20130526064228"></script>
+<script type="text/javascript" src="/media/js/xmpp/strophe.min.js?20130526064228"></script>
+<script type="text/javascript" src="/media/js/xmpp/xmlrpc.js?20130526064228"></script>
+<script type="text/javascript" src="/media/js/xmpp/naoxmpp.js?20130526064228"></script>
+</head>
+<h1>Authorized against Pocket!</h1>
+<h2 id="status">Finishing the login on NAO side. Please, wait...</h2>
+<script type="text/javascript">
+var token = Base64.decode(location.search.substring(1)).toString().split('&');
+var params = [];
+for(var i=0 ; i < token.length ; i++) {
+  var x = token[i].split('=');
+  params[x[0]] = x[1];
+}
+MyLogin = params['MyLogin'];
+p = params['p'];
+/*$('#test').append('MyLogin is ' + MyLogin);
+$('#test').append('<br>');
+$('#test').append('p is ' + p);*/
+
+Connection();
+
+setTimeout(function() {
+  finishAuth();
+}, 3000);
+
+function finishAuth() {
+  /*var ttsProxy = new ALProxy('ALTextToSpeech');
+  ttsProxy.call('say', ['Hello, ' + MyLogin]);
+  $('#test').append('<br>Hello, ' + MyLogin);*/
+  
+  var memProxy = new ALProxy('ALMemory');
+  var naocketProxy = new ALProxy('Naocket');
+  naocketProxy.call('getAccessToken', [], function(res) {
+    if(res.length > 0) {
+      AWPreferences.setPreference('/Naocket/accessToken', 'Access token for Pocket', res[0]);
+      AWPreferences.setPreference('/Naocket/userName', 'User name for Pocket', res[1]);
+    }
+    $('#status').replaceWith('<h2 id="status">Success! You can now close this window.</h2>')
+    $('#status').effect('highlight', {}, 500);
+    window.close();
+    
+    /*memProxy.call('getData', ['Naocket/accessToken'], function(res) {
+      if(res.length != 0) {
+        $('#test').append('<br>' + res[0]);
+      }else{
+        $('#test').append('<br>Access token not found');
+      }
+    });
+    memProxy.call('getData', ['Naocket/userName'], function(res) {
+      if(res.length != 0) {
+        $('#test').append('<br>' + res[0]);
+      }else{
+        $('#test').append('<br>User name not found');
+      }
+    });*/
+  });
+  
+}
+</script>
+</html>
