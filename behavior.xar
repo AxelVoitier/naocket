@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3">
+    <Box name="root" id="-1" tooltip="Root box of Choregraphe&apos;s project. Highest level possible." x="0" y="0">
+        <bitmap>media/images/box/root.png</bitmap>
+        <script language="4">
+            <content>
+                <![CDATA[]]>
+</content>
+        </script>
+        <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+        <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+        <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+        <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+        <Timeline enable="0">
+            <BehaviorLayer name="behavior_layer1">
+                <BehaviorKeyframe name="keyframe1" index="1">
+                    <Diagram>
+                        <Box name="Load libs" id="1" tooltip="Enter tooltip here" x="301" y="201">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# Copyright Axel Voitier (May 2013)
+# 
+# axel.voitier@gmail.com
+# 
+# This software is a computer program whose purpose is to have NAO,
+# the humanoid robot, read aloud articles saved in Pocket.
+# 
+# This software is governed by the CeCILL license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+# 
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+# 
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+# 
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL license and that you accept its terms.
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_onStart(self):
+        behaviourPath = ALFrameManager.getBehaviorPath(self.behaviorId)
+        py = ALProxy("ALPythonBridge")
+        py.eval("import sys; sys.path.append('%s')" % behaviourPath)
+        py.eval("from pocket import api as pocket")
+        py.eval("import pocketConsumerKey")
+        py.eval("from naoutil import ALModule as ALModule2")
+        self.onStopped() #~ activate output of the box
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                        </Box>
+                        <Box name="Load twice the behaviour" id="3" tooltip="I haven&apos;t resolved yet some python import module problems.&#x0A;The first time you load the behaviour the second box will be red. Reload the behaviour and it will work." x="308" y="38">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                        </Box>
+                        <Box name="Naocket module" id="2" tooltip="Enter tooltip here" x="518" y="196">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# Copyright Axel Voitier (May 2013)
+# 
+# axel.voitier@gmail.com
+# 
+# This software is a computer program whose purpose is to have NAO,
+# the humanoid robot, read aloud articles saved in Pocket.
+# 
+# This software is governed by the CeCILL license under French law and
+# abiding by the rules of distribution of free software.  You can  use, 
+# modify and/ or redistribute the software under the terms of the CeCILL
+# license as circulated by CEA, CNRS and INRIA at the following URL
+# "http://www.cecill.info". 
+# 
+# As a counterpart to the access to the source code and  rights to copy,
+# modify and redistribute granted by the license, users are provided only
+# with a limited warranty  and the software's author,  the holder of the
+# economic rights,  and the successive licensors  have only  limited
+# liability. 
+# 
+# In this respect, the user's attention is drawn to the risks associated
+# with loading,  using,  modifying and/or developing or reproducing the
+# software by the user in light of its specific status of free software,
+# that may mean  that it is complicated to manipulate,  and  that  also
+# therefore means  that it is reserved for developers  and  experienced
+# professionals having in-depth computer knowledge. Users are therefore
+# encouraged to load and test the software's suitability as regards their
+# requirements in conditions enabling the security of their systems and/or 
+# data to be ensured and,  more generally, to use and operate it in the 
+# same conditions as regards security. 
+# 
+# The fact that you are presently reading this means that you have had
+# knowledge of the CeCILL license and that you accept its terms.
+
+class Naocket(ALModule2):
+    def __init__(self, loggeur):
+        ALModule2.__init__(self, 'Naocket')
+        self.logger = loggeur
+        self.mem = ALProxy('ALMemory')
+        self.tts = ALProxy('ALTextToSpeech')
+        
+        self.logger.info(self._getPref('/Naocket/accessToken'))
+        self.logger.info(self._getPref('/Naocket/userName'))
+        self.pocketApi = pocket.PocketAPI(pocketConsumerKey.key,  self._getPref('/Naocket/accessToken'), self._getPref('/Naocket/userName'))
+        self.redirectUri = 'https://community.aldebaran-robotics.com/mynao/naocket/authorizationFinished.html?'
+        
+    def _getPref(self, path):
+        def _explorePref(path, rootNode):
+            for node in rootNode:
+                if node[0] == path[0]:
+                    if len(path) > 1:
+                        return _explorePref(path[1:], node[2])
+                    else:
+                        return node[2]
+                        
+        allData = self.mem.getData('/Preferences')
+        return _explorePref(path.lstrip('/').split('/'), allData)
+        
+    def getAuthUrl(self, token):
+        self.tts.post.say('url')
+        self.logger.info('Token = ' + token)
+        self.redirectUri += token
+        self.requestToken = str(self.pocketApi.getRequestToken(self.redirectUri))
+        self.logger.info('Request token = ' + self.requestToken)
+        return self.requestToken
+        
+    def getAccessToken(self):
+        self.tts.post.say('finish')
+        accessToken = self.pocketApi.getAccessToken(self.requestToken)
+        self.logger.info(str(accessToken[0]))
+        self.logger.info(str(accessToken[1]))
+        #self.tts.post.say('pwet')
+        #vals = [[t[0], str(t[1])] for t in zip(['Naocket/accessToken', 'Naocket/userName'], accessToken)]
+        #self.mem.insertListData(vals)
+        #self.tts.post.say('pwet')
+        return [str(i) for i in accessToken]
+        
+    def getLen(self):
+        #return len(self.pocketApi.retrieve(state='all')['list'])
+        return len(self.pocketApi.retrieve()['list'])
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_onStart(self):
+        self.naocketModule = Naocket(self.logger)
+        self.onStopped() #~ activate output of the box
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                        </Box>
+                        <Link inputowner="1" indexofinput="2" outputowner="0" indexofoutput="2" />
+                        <Link inputowner="2" indexofinput="2" outputowner="1" indexofoutput="4" />
+                    </Diagram>
+                </BehaviorKeyframe>
+            </BehaviorLayer>
+        </Timeline>
+    </Box>
+</ChoregrapheProject>
